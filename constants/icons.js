@@ -1,0 +1,17 @@
+import home from '../assets/icons/home.png'
+import apps from '../assets/icons/apps.png'
+import blog from '../assets/icons/blog.png'
+import envelope from '../assets/icons/envelope.png'
+import user from '../assets/icons/user.png'
+import eye from '../assets/icons/eye.png'
+import eyeHide from '../assets/icons/eye-hide.png'
+import google from '../assets/icons/google.png'
+import bell from '../assets/icons/bell.png'
+import calendar from '../assets/icons/calendar.png'
+import star from '../assets/icons/star.png'
+import add from '../assets/icons/plus.png'
+import comment from '../assets/icons/comment.png'
+import heart from '../assets/icons/heart.png'
+import dots from '../assets/icons/dots.png'
+
+export default { home, apps, blog, envelope, user, eye, eyeHide, google, bell, calendar, star, add, comment, heart, dots }
