@@ -1,4 +1,4 @@
-#Mind Connect
+# MindConnect
 
 ## GETTING STARTED
 1. Clone the project
