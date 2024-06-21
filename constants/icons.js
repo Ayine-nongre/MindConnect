@@ -13,5 +13,8 @@ import add from '../assets/icons/plus.png'
 import comment from '../assets/icons/comment.png'
 import heart from '../assets/icons/heart.png'
 import dots from '../assets/icons/dots.png'
+import check from '../assets/icons/checklist.png'
+import license from '../assets/icons/licensing.png'
+import back from '../assets/icons/back.png'
 
-export default { home, apps, blog, envelope, user, eye, eyeHide, google, bell, calendar, star, add, comment, heart, dots }
+export default { home, apps, blog, envelope, user, eye, eyeHide, google, bell, calendar, star, add, comment, heart, dots, check, license, back }

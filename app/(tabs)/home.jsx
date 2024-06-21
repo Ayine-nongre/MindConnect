@@ -36,24 +36,6 @@ const Home = () => {
     )
   }
 
-  const renderProfs = ({ item }) => {
-    return (
-      <View style={{ flexDirection: 'row', marginTop: 10 }}>
-        <Image source={ item.image } resizeMode='fill' style={{ borderRadius: 100, width: 60, height: 60, borderWidth: 1, borderColor: 'grey' }}/>
-        <View style={{ marginLeft: 10}}>
-          <Text>{ item.name }</Text>
-          <View style={{ flexDirection: 'row', gap: 5, alignItems: 'center', marginTop: 10 }}>
-            <Image source={icons.star} resizeMode='contain' style={{ width: 20, height: 20 }} />
-            <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular', color: '#f3e208' }}>{ item.rating }</Text>
-            <Text>|</Text>
-            <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular', color: `${colors.PRIMARY}`, fontSize: 12 }}>{ item.specialty }</Text>
-          </View>
-        </View>
-        <Link href='home' style={{ fontFamily: 'RobotoSerif_28pt-Regular', color: '#3fb779', marginLeft: 10 }}>View</Link>
-      </View>
-    )
-  }
-
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: `${colors.BACKGROUND}` }}>
       <ScrollView >
@@ -118,13 +100,22 @@ const Home = () => {
 
           {/* code for suggested professionals */}
           <Text style={{ fontFamily: 'RobotoSerif_28pt-Bold',  fontSize: 20, marginLeft: 25, marginTop: 7}}>Professionals for you</Text>
-          <FlatList
-            data={professionals}
-            renderItem={renderProfs}
-            keyExtractor={professionals => professionals.id}
-            showsVerticalScrollIndicator={false}
-            style={{ marginLeft: 25, marginTop: 10, flexGrow: 0 }}
-          />
+
+          {
+              professionals.map((item) => <View style={{ flexDirection: 'row', marginTop: 10, marginLeft: 'auto', marginRight: 'auto' }} key={item.id}>
+                <Image source={ item.image } resizeMode='fill' style={{ borderRadius: 100, width: 60, height: 60, borderWidth: 1, borderColor: 'grey' }}/>
+                <View style={{ marginLeft: 10}}>
+                  <Text>{ item.name }</Text>
+                  <View style={{ flexDirection: 'row', gap: 5, alignItems: 'center', marginTop: 10 }}>
+                    <Image source={icons.star} resizeMode='contain' style={{ width: 20, height: 20 }} />
+                    <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular', color: '#f3e208' }}>{ item.rating }</Text>
+                    <Text>|</Text>
+                    <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular', color: `${colors.PRIMARY}`, fontSize: 12 }}>{ item.specialty }</Text>
+                  </View>
+                </View>
+                <Link href='home' style={{ fontFamily: 'RobotoSerif_28pt-Regular', color: '#3fb779', marginLeft: 10 }}>View</Link>
+              </View>)
+          }
 
           {/* most preferred blog */}
           <Text style={{ fontFamily: 'RobotoSerif_28pt-Bold',  fontSize: 20, marginLeft: 25, marginTop: 15}}>Most preferred blog</Text>

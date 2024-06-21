@@ -3,6 +3,7 @@ import React from 'react'
 import { Tabs } from 'expo-router'
 import icons from '../../constants/icons'
 import colors from '../../constants/Themes'
+import { useGlobalContext } from '../../context/GlobalProvider'
 
 const TabIcon = ({ name, icon, tintColor }) => {
     return (
@@ -13,6 +14,8 @@ const TabIcon = ({ name, icon, tintColor }) => {
 }
 
 const TabLayout = () => {
+  const { user } = useGlobalContext()
+
   return (
     <Tabs
     screenOptions={{
@@ -36,7 +39,7 @@ const TabLayout = () => {
         <Tabs.Screen name='post' options={{
             headerShown: false,
             tabBarIcon: ({ focused, color}) => (
-                <TabIcon name='Post' icon={icons.apps} focused={focused} tintColor={colors.SECONDARY} />
+                <TabIcon name='Post' icon={user.user.user_metadata.role === 'patient' ? icons.apps : icons.calendar } focused={focused} tintColor={colors.SECONDARY} />
             )
         }}/>
         <Tabs.Screen name='blog' options={{
