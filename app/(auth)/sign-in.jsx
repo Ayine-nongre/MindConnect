@@ -9,8 +9,10 @@ import { supabase } from '../../lib/supabase.ts'
 import colors from '../../constants/Themes.js'
 import icons from '../../constants/icons.js'
 import FocusAwareStatusBar from '../../components/FocusedStatusBar.jsx'
+import { useGlobalContext } from '../../context/GlobalProvider.js'
 
 const Signin = () => {
+  const { setIsLogged, setUser } = useGlobalContext()
   const [loading, setloading] = useState(false)
   const [form, setForm] = useState({
     email: '',
@@ -20,12 +22,14 @@ const Signin = () => {
   // code for signing a user in
   async function signInWithEmail() {
     setloading(true)
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email: form.email,
       password: form.password,
     })
 
     if (error) Alert.alert(error.message)
+    setUser(data)
+    setIsLogged(true)
     setloading(false)
     if (!error) router.replace('/home')
   }

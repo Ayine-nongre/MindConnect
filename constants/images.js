@@ -11,5 +11,6 @@ import lady from '../assets/images/girl.png'
 import imgPost from '../assets/images/imgPost.jpeg'
 import patient from '../assets/images/patient.png'
 import doctor from '../assets/images/doctor.png'
+import waving from '../assets/images/Waving.jpg'
 
-export default { bipolar, dementia, insomnia, schizo, anxiety, stress, pfp1, pfp2, depression, lady, imgPost, patient, doctor }
+export default { bipolar, dementia, insomnia, schizo, anxiety, stress, pfp1, pfp2, depression, lady, imgPost, patient, doctor, waving }

@@ -11,14 +11,20 @@ import icons from '../../constants/icons.js'
 import { RadioButton } from 'react-native-paper'
 import images from '../../constants/images.js'
 import FocusAwareStatusBar from '../../components/FocusedStatusBar.jsx'
+import { useGlobalContext } from '../../context/GlobalProvider.js'
+import { createNewPatient, createNewProfessional } from '../../lib/userQueries.js'
 
 const Signup = () => {
+  const { setIsLogged, setUser } = useGlobalContext()
   const [loading, setLoading] = useState(false)
   const [form, setForm] = useState({
     email: '',
     password: '',
     license_no: '',
-    specialty: ''
+    specialty: '',
+    name: '',
+    phone: '',
+    experience: ''
   })
 
   const [selectedValue, setSelectedValue] = useState('male')
@@ -29,27 +35,23 @@ const Signup = () => {
     setLoading(true)
     const { data, error, } = await supabase.auth.signUp({
       email: form.email,
-      password: form.password
+      password: form.password,
+      options: {
+        data: {
+          role: role
+        }
+      }
     })
 
     if (error) Alert.alert(error.message)
     console.log(error)
     if (data && data.user) {
-      const { error: insertError } = await supabase.from('profiles').update({
-          gender: selectedValue,
-          license: form.license_no,
-          specialty: form.specialty,
-          role: role
-        }).eq('id', data.user.id)
-
-      if (insertError) {
-        console.error(
-          "Error inserting user into 'users' table:",
-          insertError
-        );
-       }
+      if (role === 'professional') await createNewProfessional(data.user.id, form, selectedValue).catch(err => console.log(err))
+      else await createNewPatient(data.user.id, form, selectedValue).catch(err => console.log(err))
     }
 
+    setUser(data)
+    setIsLogged(true)
     setLoading(false)
     if (!error) router.replace('/home')
   }
@@ -61,7 +63,8 @@ const Signup = () => {
       email: '',
       password: '',
       license_no: '',
-      specialty: ''
+      specialty: '',
+      experience: ''
     })
   }
 
@@ -93,6 +96,18 @@ const Signup = () => {
           {/* code for patient sign up */}
           {role === 'patient' && (
             <View>
+              <Formfield 
+              title='Name'
+              value={form.name}
+              handleTextChange={(e) => setForm({...form, name: e})}
+              placeholder='Enter your name'
+              />
+              <Formfield 
+              title='Phone'
+              value={form.phone}
+              handleTextChange={(e) => setForm({...form, phone: e})}
+              placeholder='Enter your phone no (Eg. 0200000000)'
+              />
               <Formfield 
               title='Email'
               value={form.email}
@@ -131,6 +146,18 @@ const Signup = () => {
           {role === 'professional' && (
             <View>
               <Formfield 
+              title='Name'
+              value={form.name}
+              handleTextChange={(e) => setForm({...form, name: e})}
+              placeholder='Enter your name'
+              />
+              <Formfield 
+              title='Phone'
+              value={form.phone}
+              handleTextChange={(e) => setForm({...form, phone: e})}
+              placeholder='Enter your phone no (Eg. 0200000000)'
+              />
+              <Formfield 
               title='Email'
               value={form.email}
               handleTextChange={(e) => setForm({...form, email: e})}
@@ -160,6 +187,12 @@ const Signup = () => {
                 value={form.license_no}
                 handleTextChange={(e) => setForm({...form, license_no: e})}
                 placeholder='Enter your license number'
+              />
+              <Formfield 
+              title='Experience'
+              value={form.experience}
+              handleTextChange={(e) => setForm({...form, experience: e})}
+              placeholder='Enter your phone no (Eg. 0200000000)'
               />
               <Formfield 
                 title='Specialty'
