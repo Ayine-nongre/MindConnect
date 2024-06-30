@@ -52,6 +52,35 @@ create policy "Users can insert their own patient." on patients
 create policy "Users can update own patient." on patients
   for update using ((select auth.uid()) = id);
 
+-- Create a table for public blogs
+create table blogs (
+  id uuid not null primary key,
+  updated_at timestamp with time zone,
+  img_url text,
+  title text,
+  message text,
+  category text,
+  user_id uuid references auth.users not null 
+);
+
+-- Set up Row Level Security (RLS)
+-- See https://supabase.com/docs/guides/auth/row-level-security for more details.
+alter table blogs
+  enable row level security;
+
+create policy "Public blogs are viewable by everyone." on blogs
+  for select using (true);
+
+create policy "Users can insert their own blog." on blogs
+  for insert with check ((select auth.uid()) = id);
+
+create policy "Users can update own blog." on blogs
+  for update using ((select auth.uid()) = id);
+
+-- Set up Storage!
+insert into storage.buckets (id, name)
+  values ('avatars', 'avatars');
+
 -- Set up Storage!
 insert into storage.buckets (id, name)
   values ('avatars', 'avatars');

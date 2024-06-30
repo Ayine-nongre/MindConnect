@@ -64,7 +64,7 @@ const Profile = () => {
             title='Edit profile'
             handlePress={() => {
               setUserData(data)
-              router.push('profile/update-profile')
+              router.push('update-profile')
             }}
             style={{ minHeight: 55, backgroundColor: '#f5def5',
               justifyContent: 'center', alignItems: 'center', borderRadius: 8,
