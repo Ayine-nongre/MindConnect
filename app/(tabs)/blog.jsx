@@ -1,55 +1,63 @@
-import { View, Text, Image, TextInput, FlatList, TouchableOpacity } from 'react-native'
-import React, { useState } from 'react'
+import { View, Text, Image, TextInput, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import icons from '../../constants/icons'
 import colors from '../../constants/Themes.js'
-import { StatusBar } from 'expo-status-bar'
 import images from '../../constants/images'
-import { AntDesign } from '@expo/vector-icons';
 import FocusAwareStatusBar from '../../components/FocusedStatusBar'
+import { router } from 'expo-router'
+import { useGlobalContext } from '../../context/GlobalProvider'
+import { getBlogs } from '../../lib/blogQueries'
 
 const Blog = () => {
+  const { user } = useGlobalContext()
   const [search, setSearch] = useState('')
+  const [blog, setBlog] = useState(null)
+  const [loading, setLoading] = useState(true)
 
-  const blogs = [
-    { "title": 'Cope With Anxiety and Depression', "image": images.depression, "id": "1",
-      "message": 'Do you sometimes worry so much that it interferes with your everyday activities? Or feel so blue that it completely clouds your outlook? Do you often experience these or similar feelings together?...'
-    },
-    { "title": 'Cope With Anxiety and Depression', "image": images.depression, "id": "2",
-      "message": 'Do you sometimes worry so much that it interferes with your everyday activities? Or feel so blue that it completely clouds your outlook? Do you often experience these or similar feelings together?...'
-    },
-    { "title": 'Cope With Anxiety and Depression', "image": images.depression, "id": "3",
-      "message": 'Do you sometimes worry so much that it interferes with your everyday activities? Or feel so blue that it completely clouds your outlook? Do you often experience these or similar feelings together?...'
-    },
-    { "title": 'Cope With Anxiety and Depression', "image": images.depression, "id": "4",
-      "message": 'Do you sometimes worry so much that it interferes with your everyday activities? Or feel so blue that it completely clouds your outlook? Do you often experience these or similar feelings together?...'
-    }
-  ]
+  useEffect(() => {
+    getBlogs()
+    .then((res) => {
+      setBlog(res)
+      setLoading(false)
+    })
+    .catch(err => console.log(err))
+  })
 
   const renderBlog = ({ item }) => {
     return (
-      <View style={{marginLeft: 'auto', marginRight: 'auto', flexDirection: 'row', width: '90%', borderRadius: 15, borderColor: 'grey',
+      <TouchableOpacity style={{marginLeft: 'auto', marginRight: 'auto', flexDirection: 'row', width: '90%', borderRadius: 15, borderColor: 'grey',
         borderWidth: 1, gap: 10, marginTop: 10, marginBottom: 10
+       }}
+       onPress={() => {
+        router.push({ pathname: 'blog-page', params: { id: item.id } })
        }}>
-        <Image source={item.image} resizeMode='fill' style={{ width: 80, height: 155, alignSelf: 'center', backgroundColor: 'lightblue', borderTopLeftRadius: 15, borderBottomLeftRadius: 15 }} />
+        <Image source={{ uri: item.img_url }} resizeMode='fill' style={{ width: 80, height: 155, alignSelf: 'center', backgroundColor: 'lightblue', borderTopLeftRadius: 15, borderBottomLeftRadius: 15 }} />
         <View>
-        <Text style={{ width: '10%', fontSize: 12, fontFamily: 'RobotoSerif_28pt-SemiBold',
+        <Text style={{ width: 200, fontSize: 12, fontFamily: 'RobotoSerif_28pt-SemiBold',
           marginTop: 10
-         }}>{ item.title }</Text>
-        <Text style={{ width: '20%', fontSize: 12, fontFamily: 'RobotoSerif_28pt-Regular', marginBottom: 15,
+         }}>{ (item.title).length < 50 ? item.title : (item.title).slice(0, 46) + '...' }</Text>
+        <Text style={{ width: 210, fontSize: 12, fontFamily: 'RobotoSerif_28pt-Regular', marginBottom: 15,
           marginTop: 5
-         }}>{ item.message }</Text>
+         }}>{ (item.message).length < 180 ? item.message : (item.message).slice(0, 180) + '...'}</Text>
         </View>
-      </View>
+      </TouchableOpacity>
     )
+  }
+
+  if (loading) {
+    return <ActivityIndicator size='large' style={{ marginTop: 'auto', marginBottom: 'auto' }}/>
   }
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: `${colors.BACKGROUND}` }}>
       {/* header code */}
       <View style={{ backgroundColor: `${colors.TERTIARY}`, padding: 20 }}>
-            <View>
+            <View style={{ flexDirection: 'row', gap: 230 }}>
               <Text style={{ fontFamily: 'RobotoSerif_28pt-Bold', fontSize: 25, marginLeft: 5 }}>Blog</Text>
+              {user.user.user_metadata.role === 'professional' && (<TouchableOpacity style={{ marginTop: 10 }} onPress={() => router.push('new-blog')}>
+                <Image source={ icons.add } resizeMode='contain' style={{ width: 20, height: 20 }}/>
+              </TouchableOpacity>)}
             </View>
             <View style={{ 
               borderWidth: 1, borderRadius: 8, backgroundColor: '#f5f5f5',
@@ -67,9 +75,9 @@ const Blog = () => {
 
       {/* code for list of blogs */}
       <FlatList
-        data={blogs}
+        data={blog}
         renderItem={renderBlog}
-        keyExtractor={(blogs) => blogs.id}
+        keyExtractor={(blog) => blog.id}
         contentContainerStyle={{ marginTop: 10 }}
       />
         
