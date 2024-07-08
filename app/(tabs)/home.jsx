@@ -86,7 +86,7 @@ const Home = () => {
               <Text style={{ fontFamily: "RobotoSerif_28pt-Bold", fontSize: 20 }}>Categories</Text>
               <Text style={{ fontFamily: "RobotoSerif_28pt-Regular", fontSize: 12, marginTop: 4 }}>Find your professional quickly</Text>
             </View>
-            <Link href='home' style={{ fontFamily: "RobotoSerif_28pt-Regular", fontSize: 12, color: '#3fb779' }}>View all</Link>
+            <Link href='professionals-page' style={{ fontFamily: "RobotoSerif_28pt-Regular", fontSize: 12, color: '#3fb779' }}>View all</Link>
           </View>
 
           <FlatList

@@ -59,6 +59,7 @@ class LargeSecureStore {
 
 const supabaseUrl = EXPO_PUBLIC_SUPABASE_URL
 const supabaseAnonKey = EXPO_PUBLIC_SUPABASE_ANON_KEY
+//console.log(EXPO_PUBLIC_SUPABASE_ANON_KEY, EXPO_PUBLIC_SUPABASE_URL)
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {

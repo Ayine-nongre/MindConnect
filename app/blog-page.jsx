@@ -2,7 +2,6 @@ import { View, Text, ActivityIndicator, ImageBackground, TouchableOpacity, Scrol
 import React, { useEffect, useState } from 'react'
 import { router, useLocalSearchParams } from 'expo-router'
 import { getBlog } from '../lib/blogQueries'
-import FocusAwareStatusBar from '../components/FocusedStatusBar'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Image } from 'react-native'
 import icons from '../constants/icons'
@@ -21,7 +20,6 @@ const BlogPage = () => {
             getUserByID(res[0].user_id)
             .then((res) => {
                 setAuthor(res)
-                console.log(res)
                 setLoading(false)
             })
         })
@@ -30,7 +28,7 @@ const BlogPage = () => {
 
     if (loading) {
         return <ActivityIndicator size='large' style={{ marginTop: 'auto', marginBottom: 'auto' }}/>
-      }
+    }
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: `${colors.BACKGROUND}` }}>
