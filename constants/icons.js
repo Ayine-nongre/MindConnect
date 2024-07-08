@@ -17,5 +17,8 @@ import check from '../assets/icons/checklist.png'
 import license from '../assets/icons/licensing.png'
 import back from '../assets/icons/back.png'
 import dropdown from '../assets/icons/dropdown.png'
+import upload from '../assets/icons/upload.png'
+import submit from '../assets/icons/submit.png'
 
-export default { home, apps, blog, envelope, user, eye, eyeHide, google, bell, calendar, star, add, comment, heart, dots, check, license, back, dropdown }
+export default { home, apps, blog, envelope, user, eye, eyeHide, google, bell, calendar, star,
+    add, comment, heart, dots, check, license, back, dropdown, upload, submit }

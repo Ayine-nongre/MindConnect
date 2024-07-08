@@ -77,6 +77,52 @@ create policy "Users can insert their own blog." on blogs
 create policy "Users can update own blog." on blogs
   for update using ((select auth.uid()) = id);
 
+-- Create a table for public posts
+create table posts (
+  id uuid not null primary key,
+  updated_at timestamp with time zone,
+  img_url text,
+  message text,
+  user_id uuid references auth.users not null 
+);
+
+-- Set up Row Level Security (RLS)
+-- See https://supabase.com/docs/guides/auth/row-level-security for more details.
+alter table posts
+  enable row level security;
+
+create policy "Public posts are viewable by everyone." on posts
+  for select using (true);
+
+create policy "Users can insert their own post." on posts
+  for insert with check ((select auth.uid()) = id);
+
+create policy "Users can update own post." on posts
+  for update using ((select auth.uid()) = id);
+
+-- Create a table for public comments
+create table comments (
+  id uuid not null primary key,
+  updated_at timestamp with time zone,
+  comment text,
+  user_id uuid references auth.users not null,
+  post_id uuid references public.posts not null 
+);
+
+-- Set up Row Level Security (RLS)
+-- See https://supabase.com/docs/guides/auth/row-level-security for more details.
+alter table comments
+  enable row level security;
+
+create policy "Public comments are viewable by everyone." on comments
+  for select using (true);
+
+create policy "Users can insert their own comment." on comments
+  for insert with check ((select auth.uid()) = id);
+
+create policy "Users can update own comment." on comments
+  for update using ((select auth.uid()) = id);
+
 -- Set up Storage!
 insert into storage.buckets (id, name)
   values ('avatars', 'avatars');
