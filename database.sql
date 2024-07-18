@@ -123,6 +123,55 @@ create policy "Users can insert their own comment." on comments
 create policy "Users can update own comment." on comments
   for update using ((select auth.uid()) = id);
 
+-- Create a table for public messages
+create table messages (
+  id uuid not null primary key,
+  updated_at timestamp with time zone,
+  created_at timestamp with time zone,
+  message text,
+  user_id uuid references auth.users not null,
+  recipient_id uuid references public.patients not null 
+);
+
+-- Set up Row Level Security (RLS)
+-- See https://supabase.com/docs/guides/auth/row-level-security for more details.
+alter table messages
+  enable row level security;
+
+create policy "Public messages are viewable by everyone." on messages
+  for select using (true);
+
+create policy "Users can insert their own message." on messages
+  for insert with check ((select auth.uid()) = id);
+
+create policy "Users can update own message." on messages
+  for update using ((select auth.uid()) = id);
+
+
+create table appointments (
+  id uuid not null primary key,
+  updated_at timestamp with time zone,
+  created_at timestamp with time zone,
+  day text,
+  time text,
+  user_id uuid references auth.users not null,
+  doctor_id uuid references public.professionals not null 
+);
+
+-- Set up Row Level Security (RLS)
+-- See https://supabase.com/docs/guides/auth/row-level-security for more details.
+alter table appointments
+  enable row level security;
+
+create policy "Public appointments are viewable by everyone." on appointments
+  for select using (true);
+
+create policy "Users can insert their own appointment." on appointments
+  for insert with check ((select auth.uid()) = id);
+
+create policy "Users can update own appointment." on appointments
+  for update using ((select auth.uid()) = id);
+
 -- Set up Storage!
 insert into storage.buckets (id, name)
   values ('avatars', 'avatars');

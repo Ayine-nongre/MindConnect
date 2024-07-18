@@ -93,10 +93,7 @@ const Professional = () => {
 
                 <CustomButton
                     title='+ Book a date for consultation'
-                    // handlePress={() => {
-                    // setUserData(data)
-                    // router.push('update-profile')
-                    // }}
+                    handlePress={() => { router.push({ pathname: 'appointment', params: { doctor_id: params.id } }) }}
                     style={{ minHeight: 55, backgroundColor: '#00e04b',
                     justifyContent: 'center', alignItems: 'center', borderRadius: 8,
                     width: '90%', marginTop: 20, alignSelf: 'center' }}

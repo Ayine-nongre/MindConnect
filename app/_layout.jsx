@@ -39,6 +39,7 @@ const RootLayout = () => {
         <Stack.Screen name='new-blog' options={{ headerShown: false}}/>
         <Stack.Screen name='blog-page' options={{ headerShown: false}}/>
         <Stack.Screen name='update-profile' options={{ headerShown: false}}/>
+        <Stack.Screen name='appointment' options={{ headerShown: false}}/>
       </Stack>
     </GlobalProvider>
   )
