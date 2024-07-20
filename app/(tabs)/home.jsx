@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, Image, TextInput, TouchableOpacity, FlatList } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { StatusBar } from 'expo-status-bar'
 import colors from '../../constants/Themes.js'
@@ -7,9 +7,14 @@ import icons from '../../constants/icons.js'
 import { Link } from 'expo-router'
 import images from '../../constants/images.js'
 import FocusAwareStatusBar from '../../components/FocusedStatusBar.jsx'
+import { getUserAppointment } from '../../lib/appointmentQueries.js'
+import { useGlobalContext } from '../../context/GlobalProvider.js'
 
 const Home = () => {
   const [search, setSearch] = useState('')
+  const { user } = useGlobalContext()
+  const [scheduleDay, setScheduleDay] = useState('')
+  const [scheduleTime, setScheduleTime] = useState('')
 
   const categories = [
     { 'title': 'BIPOLAR DISORDER', 'image': images.bipolar },
@@ -24,6 +29,40 @@ const Home = () => {
     { 'name': 'Dr Maram Ahmed', 'rating': '4.99', 'specialty': 'Cognitive psychologist', 'image': images.pfp1, 'id': '1' },
     { 'name': 'Dr Hanan Alatas', 'rating': '4.80', 'specialty': 'Cognitive psychologist', 'image': images.pfp2, 'id': '2' }
   ]
+
+  useEffect(() => {
+    getUserAppointment(user.user.id)
+    .then(res => {
+      console.log(res)
+      let closestDay = ''
+      let closestTime = ''
+      let least = Number.MAX_SAFE_INTEGER
+      let leastTime = Number.MAX_SAFE_INTEGER
+      res.map(data => {
+        const date = new Date(data.day)
+        if (date.getTime() < least) {
+          least = date.getTime()
+          closestDay = data.day
+        }
+      })
+
+      res.map(data => {
+        const date = new Date(data.day)
+        if (data.day === closestDay) {
+          if (leastTime > Number((data.time).split(':')[0]) && Number((data.time).split(':')[0]) > 5) {
+            closestTime = (data.time).split('-')[0]
+            leastTime = Number((data.time).split(':')[0])
+          } else if (leastTime > (Number((data.time).split(':')[0]) + 12)) {
+            closestTime = (data.time).split('-')[0]
+            leastTime = Number((data.time).split(':')[0])
+          }
+        }
+      })
+      setScheduleDay(closestDay.slice(3, 10))
+      setScheduleTime(closestTime)
+    })
+    .catch(err => console.log(err))
+  },[])
 
   const renderItem = ({ item }) => {
     return (
@@ -72,7 +111,7 @@ const Home = () => {
               <Text style={{ fontFamily: 'RobotoSerif_28pt-SemiBold' }}>Upcoming session</Text>
               <View style={{ flexDirection: 'row'}}>
                 <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular', marginTop: 7 }}>Your session at {' '}</Text>
-                <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular', marginTop: 7, color: '#3fb779'}} >May 30, 2:00PM</Text>
+                <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular', marginTop: 7, color: '#3fb779'}} >{ scheduleDay + ', ' + scheduleTime }</Text>
               </View>
               <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular' }}>Let's get ready for that on time</Text>
             </View>

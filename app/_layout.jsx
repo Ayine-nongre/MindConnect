@@ -11,7 +11,6 @@ const RootLayout = () => {
     "RobotoSerif_28pt-Regular": require('../assets/fonts/RobotoSerif_28pt-Regular.ttf'),
     "RobotoSerif_28pt-SemiBold": require('../assets/fonts/RobotoSerif_28pt-SemiBold.ttf'),
     "RobotoSerif_28pt-Bold": require('../assets/fonts/RobotoSerif_28pt-Bold.ttf')
-
   })
 
   useEffect(() => {

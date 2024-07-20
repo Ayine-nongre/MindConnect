@@ -27,7 +27,10 @@ const Signin = () => {
       password: form.password,
     })
 
-    if (error) Alert.alert(error.message)
+    if (error) {
+      Alert.alert(error.message)
+      router.replace('sign-up')
+    }
     setUser(data)
     setIsLogged(true)
     setloading(false)
