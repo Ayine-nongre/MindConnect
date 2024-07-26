@@ -1,15 +1,16 @@
-import { View, Text, SafeAreaView, ScrollView, TouchableOpacity, Image } from 'react-native'
-import React, { useEffect } from 'react'
-import { supabase } from '../../lib/supabase'
+import { View, Text, SafeAreaView, TouchableOpacity, Image } from 'react-native'
+import React from 'react'
 import icons from '../../constants/icons'
 import FocusAwareStatusBar from '../../components/FocusedStatusBar'
 import { router } from 'expo-router'
+import { ChannelList } from 'stream-chat-expo'
+import { useGlobalContext } from '../../context/GlobalProvider'
 
 const Chat = () => {
+    const { user } = useGlobalContext()
 
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: `${colors.BACKGROUND}` }}>
-        <ScrollView>
           {/* header code */}
           <View style={{ backgroundColor: '#fdee82', padding: 20, paddingTop: 40 }}>
                 <View style={{ flexDirection: 'row', gap: 150}}>
@@ -21,7 +22,9 @@ const Chat = () => {
                   </TouchableOpacity>
                 </View>
           </View>
-        </ScrollView>
+          <ChannelList 
+          filters={{ members: {$in: [user.user.id]}}}
+          onSelect={(channel) => router.push({ pathname: 'chat-channel', params: { cid: channel.id }})}/>
         <FocusAwareStatusBar backgroundColor='#fdee82' style='light'/>
       </SafeAreaView>
     )

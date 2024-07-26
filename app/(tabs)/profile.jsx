@@ -33,7 +33,7 @@ const Profile = () => {
     .catch((err) => console.log(err))
   })
 
-  if (loading && !user) {
+  if (loading) {
     return <ActivityIndicator size='large' style={{ marginTop: 'auto', marginBottom: 'auto' }}/>
   }
 
