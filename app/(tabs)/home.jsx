@@ -1,13 +1,12 @@
-import { View, Text, ScrollView, Image, TextInput, TouchableOpacity, FlatList } from 'react-native'
+import { View, Text, ScrollView, Image, TextInput, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { StatusBar } from 'expo-status-bar'
 import colors from '../../constants/Themes.js'
 import icons from '../../constants/icons.js'
 import { Link } from 'expo-router'
 import images from '../../constants/images.js'
 import FocusAwareStatusBar from '../../components/FocusedStatusBar.jsx'
-import { getUserAppointment } from '../../lib/appointmentQueries.js'
+import { getDoctorAndUserAppointment, getUserAppointment } from '../../lib/appointmentQueries.js'
 import { useGlobalContext } from '../../context/GlobalProvider.js'
 
 const Home = () => {
@@ -15,6 +14,8 @@ const Home = () => {
   const { user } = useGlobalContext()
   const [scheduleDay, setScheduleDay] = useState('')
   const [scheduleTime, setScheduleTime] = useState('')
+  const [schedule, setSchedule] = useState(null)
+  const [loading, setLoading] = useState(true)
 
   const categories = [
     { 'title': 'BIPOLAR DISORDER', 'image': images.bipolar },
@@ -30,49 +31,78 @@ const Home = () => {
     { 'name': 'Dr Hanan Alatas', 'rating': '4.80', 'specialty': 'Cognitive psychologist', 'image': images.pfp2, 'id': '2' }
   ]
 
-  useEffect(() => {
-    getUserAppointment(user.user.id)
-    .then(res => {
-      console.log(res)
-      let closestDay = ''
-      let closestTime = ''
-      let least = Number.MAX_SAFE_INTEGER
-      let leastTime = Number.MAX_SAFE_INTEGER
-      res.map(data => {
-        const date = new Date(data.day)
-        if (date.getTime() < least) {
-          least = date.getTime()
-          closestDay = data.day
-        }
-      })
+  function parseDateTime(day, time) {
+    let date = new Date(day)
+    date = Number(date.getTime())
+    let parseTime = time.split(':')[0]
+    parseTime = Number(parseTime)
+    if (parseTime < 5) parseTime += 12
+    return date + parseTime
+  }
 
-      res.map(data => {
-        const date = new Date(data.day)
-        if (data.day === closestDay) {
-          if (leastTime > Number((data.time).split(':')[0]) && Number((data.time).split(':')[0]) > 5) {
-            closestTime = (data.time).split('-')[0]
-            leastTime = Number((data.time).split(':')[0])
-          } else if (leastTime > (Number((data.time).split(':')[0]) + 12)) {
-            closestTime = (data.time).split('-')[0]
-            leastTime = Number((data.time).split(':')[0])
-          }
-        }
+  useEffect(() => {
+    if (user.user.user_metadata.role !== 'professional') {
+      getUserAppointment(user.user.id)
+      .then(res => {
+        res.sort((a, b) => {
+          const dateA = parseDateTime(a.day, a.time);
+          const dateB = parseDateTime(b.day, b.time);
+          return dateA - dateB;
+        });
+        setScheduleDay((res[0].day).slice(3, 10))
+        setScheduleTime((res[0].time).split('-')[0])
       })
-      setScheduleDay(closestDay.slice(3, 10))
-      setScheduleTime(closestTime)
-    })
-    .catch(err => console.log(err))
+      .catch(err => console.log(err))
+    } else {
+      getDoctorAndUserAppointment(user.user.id)
+      .then((res) => {
+        res.sort((a, b) => {
+          const dateA = parseDateTime(a.day, a.time);
+          const dateB = parseDateTime(b.day, b.time);
+          return dateA - dateB;
+        });
+        setSchedule([res[0], res[1]])
+      })
+      .catch(err => console.log(err))
+    }
+    setLoading(false)
   },[])
 
   const renderItem = ({ item }) => {
     return (
-      <TouchableOpacity style={{ justifyContent: 'center', alignItems: 'center', height: 110 }}>
+      <TouchableOpacity style={{ justifyContent: 'center', alignItems: 'center', height: 110 }} key={item.title}>
         <View style={{ padding: 10, backgroundColor: '#f3d6d6', borderRadius: 10, justifyContent: 'center', width: 100, marginLeft: 20  }}>
           <Image source={ item.image } resizeMode='contain' style={{ width: 80, height: 70 }}/>
         </View>
         <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular', fontSize: 9, marginLeft: 20 }}>{ item.title }</Text>
       </TouchableOpacity>
     )
+  }
+
+  const renderSchedule = ({ item }) => {
+    return (
+      <View style={{
+        backgroundColor: `${colors.SECONDARY}`, padding: 15, borderRadius: 10, flexDirection: 'row', gap: 20, marginTop: 20,
+        justifyContent: 'center', alignItems: 'center', marginRight: 10
+      }} key={item.id}>
+        <Image source={ icons.calendar } resizeMode='contain' style={{ width: 35, height: 35 }} tintColor='#3fb779'/>
+        <View>
+          <Text style={{ fontFamily: 'RobotoSerif_28pt-SemiBold', fontSize: 12 }}>UPCOMING SESSION</Text>
+          <Text style={{ fontFamily: 'RobotoSerif_28pt-SemiBold', fontSize: 13 }}>WITH {(item.patients.name).toUpperCase()}</Text>
+          <View style={{ flexDirection: 'row'}}>
+            <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular', marginTop: 7, fontSize: 12 }}>Your session at {' '}</Text>
+            <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular', marginTop: 7, color: '#3fb779', fontSize: 12 }} >{(item.day).slice(3, 10)}, at {(item.time).split('-')[0]}</Text>
+          </View>
+          <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular', fontSize: 12 }}>Let's get ready for that on time</Text>
+        </View>
+      </View>
+    )
+  }
+
+  
+
+  if (loading) {
+    return <ActivityIndicator size='large' style={{ marginTop: 'auto', marginBottom: 'auto' }}/>
   }
 
   return (
@@ -101,7 +131,7 @@ const Home = () => {
           </View>
 
           {/* code for upcoming sessions */}
-          <View style={{
+          {user.user.user_metadata.role !== 'professional' ? (<View style={{
               backgroundColor: `${colors.SECONDARY}`, padding: 15, justifyContent: 'center', marginTop: 20,
               borderRadius: 10, width: '85%', alignSelf: 'center', flexDirection: 'row', alignItems: 'center',
               gap: 20
@@ -115,7 +145,17 @@ const Home = () => {
               </View>
               <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular' }}>Let's get ready for that on time</Text>
             </View>
-          </View>
+          </View>) : (
+            <FlatList
+              data={schedule}
+              renderItem={renderSchedule}
+              keyExtractor={(schedule) => schedule.id}
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{ gap: 5 }}
+              style={{ marginLeft: 'auto', marginRight: 'auto', flexGrow: 0, width: '90%' }}
+            />
+          )}
 
           {/* code for categories */}
           <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center',
@@ -134,7 +174,7 @@ const Home = () => {
             keyExtractor={categories => categories.title}
             horizontal={true}
             showsHorizontalScrollIndicator={false}
-            style={{ marginLeft: 7, marginTop: 20, marginRight: 10, flexGrow: 0 }}
+            style={{ marginLeft: 'auto', marginRight: 'auto', flexGrow: 0, width: '90%' }}
           />
 
           {/* code for suggested professionals */}

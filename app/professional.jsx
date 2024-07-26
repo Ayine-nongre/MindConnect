@@ -2,14 +2,25 @@ import { View, Text, SafeAreaView, ScrollView, TouchableOpacity, Image, Activity
 import React, { useEffect, useState } from 'react'
 import { router, useLocalSearchParams } from 'expo-router'
 import icons from '../constants/icons'
-import images from '../constants/images'
 import { getProfessionalById } from '../lib/userQueries'
 import CustomButton from '../components/CustomButton'
+import { useChatContext } from 'stream-chat-expo'
+import { useGlobalContext } from '../context/GlobalProvider'
 
 const Professional = () => {
+    const { client } = useChatContext()
+    const { user } = useGlobalContext()
     const params = useLocalSearchParams()
     const [doctor, setDoctor] = useState(null)
     const [loading, setLoading] = useState(true)
+
+    const createChannel = async () => {
+        const channel = client.channel('messaging', {
+            members: [user.user.id, params.id],
+        })
+        await channel.watch()
+        router.replace({ pathname: 'chat-channel', params: { cid: channel.id }})
+    }
 
     useEffect(() => {
         getProfessionalById(params.id)
@@ -46,10 +57,7 @@ const Professional = () => {
 
                 <CustomButton
                     title='Message the professional'
-                    // handlePress={() => {
-                    // setUserData(data)
-                    // router.push('update-profile')
-                    // }}
+                    handlePress={createChannel}
                     style={{ minHeight: 55, backgroundColor: '#dcdcdc',
                     justifyContent: 'center', alignItems: 'center', borderRadius: 8,
                     width: '90%', marginTop: 20, alignSelf: 'center' }}

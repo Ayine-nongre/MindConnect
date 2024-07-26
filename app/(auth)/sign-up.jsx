@@ -1,8 +1,7 @@
 import { Alert, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { StatusBar } from 'expo-status-bar'
-import { Link, router } from 'expo-router'
+import { Link, Redirect, router } from 'expo-router'
 import Formfield from '../../components/FormField.jsx'
 import CustomButton from '../../components/CustomButton.jsx'
 import { supabase } from '../../lib/supabase.ts'
@@ -43,8 +42,10 @@ const Signup = () => {
       }
     })
 
-    if (error) Alert.alert(error.message)
-    console.log(error)
+    if (error) {
+      Alert.alert(error.message)
+      return <Redirect href='/sign-up'/>
+    }
     if (data && data.user) {
       if (role === 'professional') await createNewProfessional(data.user.id, form, selectedValue).catch(err => console.log(err))
       else await createNewPatient(data.user.id, form, selectedValue).catch(err => console.log(err))
@@ -213,7 +214,6 @@ const Signup = () => {
           <CustomButton
             title="Sign up"
             handlePress={signUpWithEmail}
-            isLoading={loading}
             style={{ minHeight: 55, backgroundColor: `${colors.SECONDARY}`,
               justifyContent: 'center', alignItems: 'center', borderRadius: 8,
               width: '100%', marginTop: 20 }}
@@ -224,7 +224,7 @@ const Signup = () => {
             <View style={{ width: '40%', borderBottomWidth: 1 }}></View>
           </View>
           <CustomButton
-            title="Sign in with Google"
+            title="Sign up with Google"
             //handlePress={signInWithEmail}
             isLoading={loading}
             style={{ minHeight: 55, backgroundColor: 'white',
