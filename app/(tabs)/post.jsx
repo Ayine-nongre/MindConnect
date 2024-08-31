@@ -18,6 +18,7 @@ const Post = () => {
   const [loading, setLoading] = useState(true)
   const [schedule, setSchedule] = useState(null)
 
+  // function to parse date and time to ease sorting
   function parseDateTime(day, time) {
     let date = new Date(day)
     date = Number(date.getTime())
@@ -28,6 +29,7 @@ const Post = () => {
   }
 
   useEffect(() => {
+    // code to fetch posts from db
     if (user.user.user_metadata.role !== 'professional') {
       getPosts()
       .then((res) => {
@@ -108,6 +110,7 @@ const Post = () => {
     )
   }
 
+  // code to render loading effect
   if (loading) {
     return <ActivityIndicator size='large' style={{ marginTop: 'auto', marginBottom: 'auto' }}/>
   }
@@ -143,6 +146,10 @@ const Post = () => {
             </View>
       </View>)}
 
+      {(schedule?.length < 1 && user.user.user_metadata.role === 'professional') && (<Text style={{ top: '35%',
+        marginLeft: 'auto', marginRight: 'auto', fontSize: 20
+      }}>No upcoming sessions</Text>)}
+
       {/* code for loaded posts */}
       {user.user.user_metadata.role !== 'professional' ? (<FlatList
         data={post}
@@ -155,10 +162,7 @@ const Post = () => {
         renderItem={renderSchedule}
         keyExtractor={(schedule) => schedule.id}
         style={{ marginBottom: 20}}
-      />)}
-
-      
-        
+      />)}    
       <FocusAwareStatusBar backgroundColor={colors.SECONDARY} style='light'/>
     </SafeAreaView>
   )

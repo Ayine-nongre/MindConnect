@@ -6,7 +6,6 @@ import { useGlobalContext } from '../../context/GlobalProvider.js'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { ScrollView } from 'react-native'
 import colors from '../../constants/Themes.js'
-import images from '../../constants/images.js'
 import CustomButton from '../../components/CustomButton.jsx'
 import icons from '../../constants/icons.js'
 import { fetchUser } from '../../lib/userQueries.js'
@@ -16,6 +15,7 @@ const Profile = () => {
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState([])
 
+  // function to sign a user out
   async function signout() {
     const { error } = await supabase.auth.signOut()
 
@@ -25,6 +25,7 @@ const Profile = () => {
   }
 
   useEffect(() => {
+    // fetch user from database
     fetchUser(user)
     .then((res) => {
       setData(res)
@@ -33,6 +34,7 @@ const Profile = () => {
     .catch((err) => console.log(err))
   })
 
+  // code to render loading effect
   if (loading) {
     return <ActivityIndicator size='large' style={{ marginTop: 'auto', marginBottom: 'auto' }}/>
   }
@@ -108,7 +110,7 @@ const Profile = () => {
           <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular' }}>{data[0].about}</Text>
 
           {/* License details */}
-          {user.user.user_metadata.role === 'professional' && (<View style={{ backgroundColor: `${colors.FIELDBKG}`, width: '90%', marginLeft: 'auto', marginRight: 'auto', marginTop: 10,
+          {user.user.user_metadata.role === 'professional' && (<View style={{ backgroundColor: `${colors.FIELDBKG}`, width: '90%', marginLeft: 'auto', marginRight: 'auto', marginTop: 20,
             borderRadius: 10, padding: 5, justifyContent: 'center', alignItems: 'center'    
           }}>
             <Image source={icons.license} resizeMode='contain' style={{ width: 25, height: 25 }} />
@@ -118,6 +120,15 @@ const Profile = () => {
             </View>
             <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular', fontSize: 10 }}>Registered in Ghana</Text>
             <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular', fontSize: 8 }}>Licenses</Text>
+          </View>)}
+
+          {user.user.user_metadata.role === 'professional' && <Text style={{ marginTop: 10, fontFamily: 'RobotoSerif_28pt-Bold', fontSize: 20}}>Specialities</Text>}
+          {user.user.user_metadata.role === 'professional' && (<View style={{ flexDirection: 'row', marginTop: 20, marginBottom: 10, gap: 10, flexWrap: 'wrap' }}>
+            {
+              data.map((item) => <View key={item.id} style={{ backgroundColor: '#a0f7a4', padding: 10, borderRadius: 10 }}>
+                <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular', fontSize: 15 }}>{item.specialty}</Text>
+              </View>)
+            }
           </View>)}
         </View>
       </ScrollView>

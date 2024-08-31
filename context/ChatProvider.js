@@ -11,7 +11,6 @@ export const ChatProvider = ({ children }) => {
     const { user } = useGlobalContext()
 
     useEffect(() => {
-        console.log("USEEFFECT: ", user)
         if (user) {
             const getDetails = async (user) => {
                 const { data, error } = await supabase
