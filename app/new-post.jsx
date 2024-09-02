@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, Image, SafeAreaView, ScrollView, TextInput } from 'react-native'
+import { View, Text, TouchableOpacity, Image, SafeAreaView, ScrollView, TextInput, Alert, ActivityIndicator } from 'react-native'
 import React, { useState } from 'react'
 import icons from '../constants/icons'
 import FocusAwareStatusBar from '../components/FocusedStatusBar'
@@ -11,10 +11,15 @@ import { router } from 'expo-router'
 
 const NewPost = () => {
     const { user } = useGlobalContext()
+    const [status, setStatus] = useState('')
     const [form, setForm] = useState({
         message: '',
         img_url: ''
     })
+
+    const validateForm = (form) => {
+        if (!form.message) throw new Error('Post must have a message')
+    }
 
     const pickImage = async () => {
         // No permissions request is necessary for launching the image library
@@ -25,6 +30,8 @@ const NewPost = () => {
           quality: 1,
           base64: true
         });
+
+        setStatus('Submitting')
     
         if (!result.canceled) {
           const img = result.assets[0]
@@ -50,6 +57,7 @@ const NewPost = () => {
             .getPublicUrl(filePath)
             
             setForm({...form, img_url: url.data.publicUrl});
+            setStatus('done')
         }
       };
 
@@ -64,8 +72,14 @@ const NewPost = () => {
                         <Image source={icons.back} resizeMode='contain' style={{ width: 15, height: 15 }} />
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => {
-                        createPost(form, user)
-                        router.back()
+                        try {
+                            validateForm(form)
+                            createPost(form, user)
+                            router.back()
+                        } catch (err) {
+                            Alert.alert(err.message)
+                        }
+                        
                     }}>
                         <Text style={{ fontFamily: 'RobotoSerif_28pt-SemiBold', fontSize: 15 }}>Post</Text>
                     </TouchableOpacity>
@@ -93,7 +107,8 @@ const NewPost = () => {
                     <Image source={icons.upload} resizeMode='contain' style={{ width: 20, height: 20 }} />
                     <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular' }}>Upload image</Text>
                 </TouchableOpacity>
-                {form.img_url && (<Image source={{ uri: form.img_url }} resizeMode='contain' style={{ width: '80%', height: 200, marginTop: 20, marginLeft: '10%', marginBottom: 30 }} />)}
+                {(form.img_url && status === 'done') && (<Image source={{ uri: form.img_url }} resizeMode='contain' style={{ width: '80%', height: 200, marginTop: 20, marginLeft: '10%', marginBottom: 30 }} />)}
+                {status === 'submitting' && (<ActivityIndicator size='large' style={{ marginTop: 'auto', marginBottom: 'auto' }}/>)}
             </ScrollView>
 
             <FocusAwareStatusBar backgroundColor={colors.SECONDARY} style='light'/>

@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, ScrollView, TouchableOpacity, Image, ActivityIndicator } from 'react-native'
+import { View, Text, SafeAreaView, ScrollView, TouchableOpacity, Image, ActivityIndicator, TextInput } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { router, useLocalSearchParams } from 'expo-router'
 import icons from '../constants/icons'
@@ -6,6 +6,7 @@ import { getProfessionalById } from '../lib/userQueries'
 import CustomButton from '../components/CustomButton'
 import { useChatContext } from 'stream-chat-expo'
 import { useGlobalContext } from '../context/GlobalProvider'
+import Communications from 'react-native-communications'
 
 const Professional = () => {
     const { client } = useChatContext()
@@ -51,7 +52,7 @@ const Professional = () => {
                 </View>
 
                 {/* professional's profile details */}
-                <Image source={{ uri: doctor[0].avatar_url }} resizeMode='cover' style={{ width: 150, height: 150, borderRadius: 100, alignSelf: 'center' }} />
+                <Image source={{ uri: doctor[0].avatar_url }} resizeMode='cover' style={{ width: 150, height: 150, borderRadius: 100, alignSelf: 'center', borderWidth: 1, borderColor: 'black' }} />
                 <Text style={{ fontFamily: 'RobotoSerif_28pt-SemiBold', fontSize: 25, marginTop: 10, textAlign: 'center' }}>{ doctor[0].name }</Text>
                 <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular', fontSize: 10, textAlign: 'center', color: `${colors.TERTIARY}` }}>{ doctor[0].specialization_area }</Text>
 
@@ -105,6 +106,16 @@ const Professional = () => {
                     style={{ minHeight: 55, backgroundColor: '#00e04b',
                     justifyContent: 'center', alignItems: 'center', borderRadius: 8,
                     width: '90%', marginTop: 20, alignSelf: 'center' }}
+                    color='white'
+                />
+
+                <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular', fontSize: 15, marginTop: 20, width: '90%', marginLeft: 'auto', marginRight: 'auto'}}>Leave the professional a direct message(only in urgent cases)</Text>
+                <CustomButton
+                    title='Send SMS'
+                    handlePress={() => Communications.textWithoutEncoding(doctor.phone)}
+                    style={{ minHeight: 55, backgroundColor: 'red',
+                    justifyContent: 'center', alignItems: 'center', borderRadius: 8,
+                    width: '90%', marginTop: 20, alignSelf: 'center', marginBottom: 20 }}
                     color='white'
                 />
             </ScrollView>

@@ -16,11 +16,13 @@ import { createNewPatient, createNewProfessional } from '../../lib/userQueries.j
 const Signup = () => {
   const { setIsLogged, setUser } = useGlobalContext()
   const [loading, setLoading] = useState(false)
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState(null)
   const [form, setForm] = useState({
     email: '',
     password: '',
     license_no: '',
-    specialty: '',
+    specialty: value,
     name: '',
     phone: '',
     experience: ''
@@ -32,9 +34,11 @@ const Signup = () => {
   // function that creates a new user
   async function signUpWithEmail() {
     setLoading(true)
+    setForm({...form, specialty: value})
     const { data, error, } = await supabase.auth.signUp({
       email: form.email,
       password: form.password,
+      
       options: {
         data: {
           role: role
@@ -195,12 +199,71 @@ const Signup = () => {
               handleTextChange={(e) => setForm({...form, experience: e})}
               placeholder='Enter your phone no (Eg. 0200000000)'
               />
-              <Formfield 
-                title='Specialty'
-                value={form.specialty}
-                handleTextChange={(e) => setForm({...form, specialty: e})}
-                placeholder='Enter your area of specialty'
-              />
+              {/* categories */}
+              <View>
+                    <View style={{ width: '100%', marginLeft: 'auto', marginRight: 'auto', marginTop: 10, flexDirection: 'row', gap: 60,
+                        justifyContent: 'center', alignContent: 'center', padding: 15, backgroundColor: `${colors.FIELDBKG}`
+                     }}>
+                        <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular', fontSize: 15, minWidth: '60%' }}>{value ? value : 'Select your area of speciality'}</Text>
+                        <TouchableOpacity
+                            onPress={() => setOpen(!open)}
+                        >
+                            <Image source={icons.dropdown} resizeMode='contain' style={{ width: 20, height: 20 }} />
+                        </TouchableOpacity>
+                    </View>
+                    {open && (<View style={{ width: '100%', marginLeft: 'auto', marginRight: 'auto', gap: 20, fontSize: 15,
+                        justifyContent: 'center', alignContent: 'center', padding: 15, backgroundColor: '#f1f1ed'
+                     }}>
+                        <TouchableOpacity
+                            onPress={() => {
+                                setValue('BIPOLAR DISORDER')
+                                setOpen(false)
+                            }}
+                        >
+                            <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular', fontSize: 12 }}>BIPOLAR DISORDER</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => {
+                                setValue('STRESS')
+                                setOpen(false)
+                            }}
+                        >
+                            <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular', fontSize: 12 }}>STRESS</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => {
+                                setValue('DEMENTIA')
+                                setOpen(false)
+                            }}
+                        >
+                            <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular', fontSize: 12 }}>DEMENTIA</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => {
+                                setValue('INSOMNIA')
+                                setOpen(false)
+                            }}
+                        >
+                            <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular', fontSize: 12 }}>INSOMNIA</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => {
+                                setValue('ANXIETY')
+                                setOpen(false)
+                            }}
+                        >
+                            <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular', fontSize: 12 }}>ANXIETY</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => {
+                                setValue('SCHIZOPHRENIA')
+                                setOpen(false)
+                            }}
+                        >
+                            <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular', fontSize: 12 }}>SCHIZOPHRENIA</Text>
+                        </TouchableOpacity>
+                    </View>)}
+                </View>
               <Formfield 
                 title='Password'
                 value={form.password}

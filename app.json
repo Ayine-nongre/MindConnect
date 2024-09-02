@@ -19,7 +19,11 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.ayinenongre.MindConnect"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -27,10 +31,20 @@
     "plugins": [
       "expo-router",
       "expo-secure-store",
-      ["expo-image-picker",
-      {
-        "photosPermission": "The app accesses your photos to let you share them with your friends."
-      }]
-    ]
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to let you share them with your friends."
+        }
+      ]
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "3db19abe-023b-4b54-9c13-38f50556ef81"
+      }
+    }
   }
 }

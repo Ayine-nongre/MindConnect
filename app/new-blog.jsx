@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, TouchableOpacity, Image, TextInput } from 'react-native'
+import { View, Text, ScrollView, TouchableOpacity, Image, TextInput, Alert } from 'react-native'
 import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import icons from '../constants/icons'
@@ -21,6 +21,12 @@ const NewBlog = () => {
         img_url: null,
         category: value
     })
+
+    const validateForm = (form) => {
+        if (!form.title) throw new Error('Blog must have a title')
+        if (!form.message) throw new Error('Blog must have a body message')
+        if (!form.category) throw new Error('Blog must have a category')
+    }
 
     const pickImage = async () => {
         // No permissions request is necessary for launching the image library
@@ -70,8 +76,13 @@ const NewBlog = () => {
                         <Image source={icons.back} resizeMode='contain' style={{ width: 15, height: 15 }} />
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => {
-                        createBlog(form, user)
-                        router.back()
+                        try { 
+                            validateForm(form)
+                            createBlog(form, user)
+                            router.back()
+                        } catch (err) {
+                            Alert.alert(err.message)
+                        }
                     }}>
                         <Text style={{ fontFamily: 'RobotoSerif_28pt-SemiBold', fontSize: 15 }}>Post</Text>
                     </TouchableOpacity>

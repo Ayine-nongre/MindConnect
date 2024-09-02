@@ -3,18 +3,20 @@ import React, { useState, useEffect } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import colors from '../../constants/Themes.js'
 import icons from '../../constants/icons.js'
-import { Link } from 'expo-router'
+import { Link, router } from 'expo-router'
 import images from '../../constants/images.js'
 import FocusAwareStatusBar from '../../components/FocusedStatusBar.jsx'
 import { getDoctorAndUserAppointment, getUserAppointment } from '../../lib/appointmentQueries.js'
 import { useGlobalContext } from '../../context/GlobalProvider.js'
+import { getProfessionals } from '../../lib/userQueries.js'
 
 const Home = () => {
   const [search, setSearch] = useState('')
   const { user } = useGlobalContext()
-  const [scheduleDay, setScheduleDay] = useState('')
-  const [scheduleTime, setScheduleTime] = useState('')
+  const [scheduleDay, setScheduleDay] = useState(null)
+  const [scheduleTime, setScheduleTime] = useState(null)
   const [schedule, setSchedule] = useState(null)
+  const [doctors, setDoctors] = useState(null)
   const [loading, setLoading] = useState(true)
 
   const categories = [
@@ -24,11 +26,6 @@ const Home = () => {
     { 'title': "INSOMNIA", 'image': images.insomnia },
     { 'title': "ANXIETY", 'image': images.anxiety },
     { 'title': "SCHIZOPHRENIA", 'image': images.schizo }
-  ]
-
-  const professionals = [
-    { 'name': 'Dr Maram Ahmed', 'rating': '4.99', 'specialty': 'Cognitive psychologist', 'image': images.pfp1, 'id': '1' },
-    { 'name': 'Dr Hanan Alatas', 'rating': '4.80', 'specialty': 'Cognitive psychologist', 'image': images.pfp2, 'id': '2' }
   ]
 
   function parseDateTime(day, time) {
@@ -44,33 +41,49 @@ const Home = () => {
     if (user.user.user_metadata.role !== 'professional') {
       getUserAppointment(user.user.id)
       .then(res => {
-        res.sort((a, b) => {
-          const dateA = parseDateTime(a.day, a.time);
-          const dateB = parseDateTime(b.day, b.time);
-          return dateA - dateB;
-        });
-        setScheduleDay((res[0].day).slice(3, 10))
-        setScheduleTime((res[0].time).split('-')[0])
+        if (res.length < 1) {
+          setScheduleDay(null)
+          setScheduleTime(null)
+        } else {
+            res.sort((a, b) => {
+            const dateA = parseDateTime(a.day, a.time);
+            const dateB = parseDateTime(b.day, b.time);
+            return dateA - dateB;
+          });
+          setScheduleDay((res[0].day).slice(3, 10))
+          setScheduleTime((res[0].time).split('-')[0])
+        }
       })
       .catch(err => console.log(err))
     } else {
       getDoctorAndUserAppointment(user.user.id)
       .then((res) => {
-        res.sort((a, b) => {
-          const dateA = parseDateTime(a.day, a.time);
-          const dateB = parseDateTime(b.day, b.time);
-          return dateA - dateB;
-        });
-        setSchedule([res[0], res[1]])
+        if (res.length < 1) {
+          setSchedule(null)
+        } else {
+            res.sort((a, b) => {
+            const dateA = parseDateTime(a.day, a.time);
+            const dateB = parseDateTime(b.day, b.time);
+            return dateA - dateB;
+          });
+          setSchedule([res[0], res[1]])
+        }
       })
       .catch(err => console.log(err))
+      getProfessionals()
+        .then((res) => {
+            setDoctors(res)
+        })
+        .catch(err => console.log(err))
     }
     setLoading(false)
   },[])
 
   const renderItem = ({ item }) => {
     return (
-      <TouchableOpacity style={{ justifyContent: 'center', alignItems: 'center', height: 110 }} key={item.title}>
+      <TouchableOpacity style={{ justifyContent: 'center', alignItems: 'center', height: 110 }} key={item.title}
+        onPress={() => router.push({ pathname: 'professionals-page' , params: { category: item.title }})}
+      >
         <View style={{ padding: 10, backgroundColor: '#f3d6d6', borderRadius: 10, justifyContent: 'center', width: 100, marginLeft: 20  }}>
           <Image source={ item.image } resizeMode='contain' style={{ width: 80, height: 70 }}/>
         </View>
@@ -99,8 +112,29 @@ const Home = () => {
     )
   }
 
-  
+  const renderDoctors = ({ item }) => {
+    return (
+        <View style={{ flexDirection: 'row', marginTop: 20, marginLeft: 'auto', marginRight: 'auto' }} key={item.id}>
+            <Image source={{ uri: item.avatar_url }} resizeMode='fill' style={{ borderRadius: 100, width: 60, height: 60, borderWidth: 1, borderColor: 'grey' }}/>
+            <View style={{ marginLeft: 10, width: 220 }}>
+              <Text style={{ fontFamily: 'RobotoSerif_28pt-SemiBold' }}>{ item.name }</Text>
+              <View style={{ flexDirection: 'row', gap: 5, alignItems: 'center', marginTop: 10 }}>
+                <Image source={icons.star} resizeMode='contain' style={{ width: 20, height: 20 }} />
+                <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular', color: '#f3e208' }}>{ item.rating }</Text>
+                <Text>|</Text>
+                <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular', color: `${colors.PRIMARY}`, fontSize: 12 }}>{ item.specialty }</Text>
+              </View>
+            </View>
+            <TouchableOpacity
+                onPress={() => { router.push({ pathname: 'professional', params: { id: item.id } }) }}
+            >
+                <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular', color: '#3fb779', marginLeft: 10 }}>View</Text>
+            </TouchableOpacity>
+        </View>
+    )
+  }
 
+  // code to render loading effect
   if (loading) {
     return <ActivityIndicator size='large' style={{ marginTop: 'auto', marginBottom: 'auto' }}/>
   }
@@ -111,7 +145,7 @@ const Home = () => {
         <View style={{ width: '100%', minHeight: '90%'}}>
           {/* code for header */}
           <View style={{ backgroundColor: `${colors.SECONDARY}`, padding: 20 }}>
-            <View style={{ flexDirection: 'row', gap: 150}}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between'}}>
               <Text style={{ color: `${colors.TEXT}`, fontFamily: 'RobotoSerif_28pt-Regular', marginLeft: 5 }}>How are you today?</Text>
               <Image source={icons.bell} resizeMode='contain' style={{ width: 20, height: 20 }}/>
             </View>
@@ -131,7 +165,7 @@ const Home = () => {
           </View>
 
           {/* code for upcoming sessions */}
-          {user.user.user_metadata.role !== 'professional' ? (<View style={{
+          {(user.user.user_metadata.role !== 'professional' && scheduleDay != null) && (<View style={{
               backgroundColor: `${colors.SECONDARY}`, padding: 15, justifyContent: 'center', marginTop: 20,
               borderRadius: 10, width: '85%', alignSelf: 'center', flexDirection: 'row', alignItems: 'center',
               gap: 20
@@ -145,7 +179,8 @@ const Home = () => {
               </View>
               <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular' }}>Let's get ready for that on time</Text>
             </View>
-          </View>) : (
+          </View>)} 
+          {(user.user.user_metadata.role === 'professional' && schedule != null) && (
             <FlatList
               data={schedule}
               renderItem={renderSchedule}
@@ -155,6 +190,18 @@ const Home = () => {
               contentContainerStyle={{ gap: 5 }}
               style={{ marginLeft: 'auto', marginRight: 'auto', flexGrow: 0, width: '90%' }}
             />
+          )} 
+          {(schedule == null && scheduleDay == null) && (
+            <View style={{
+              backgroundColor: `${colors.SECONDARY}`, padding: 15, justifyContent: 'center', marginTop: 20,
+              borderRadius: 10, width: '85%', alignSelf: 'center', flexDirection: 'row', alignItems: 'center',
+              gap: 20, height: 150
+            }}>
+            <Image source={ icons.calendar } resizeMode='contain' style={{ width: 30, height: 30 }} tintColor='#3fb779'/>
+            <View>
+              <Text style={{ fontFamily: 'RobotoSerif_28pt-SemiBold' }}>No upcoming sessions</Text>
+            </View>
+          </View>
           )}
 
           {/* code for categories */}
@@ -168,22 +215,22 @@ const Home = () => {
             <Link href='professionals-page' style={{ fontFamily: "RobotoSerif_28pt-Regular", fontSize: 12, color: '#3fb779' }}>View all</Link>
           </View>
 
-          <FlatList
-            data={categories}
-            renderItem={renderItem}
-            keyExtractor={categories => categories.title}
-            horizontal={true}
-            showsHorizontalScrollIndicator={false}
-            style={{ marginLeft: 'auto', marginRight: 'auto', flexGrow: 0, width: '90%' }}
-          />
+        <FlatList
+          data={categories}
+          renderItem={renderItem}
+          keyExtractor={categories => categories.title}
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          style={{ marginLeft: 'auto', marginRight: 'auto', flexGrow: 0, width: '90%' }}
+        />
 
           {/* code for suggested professionals */}
-          <Text style={{ fontFamily: 'RobotoSerif_28pt-Bold',  fontSize: 20, marginLeft: 25, marginTop: 7}}>Professionals for you</Text>
+          {user.user.user_metadata.role !== 'professional' && (<Text style={{ fontFamily: 'RobotoSerif_28pt-Bold',  fontSize: 20, marginLeft: 25, marginTop: 7}}>Professionals for you</Text>)}
 
           {
-              professionals.map((item) => <View style={{ flexDirection: 'row', marginTop: 10, marginLeft: 'auto', marginRight: 'auto' }} key={item.id}>
-                <Image source={ item.image } resizeMode='fill' style={{ borderRadius: 100, width: 60, height: 60, borderWidth: 1, borderColor: 'grey' }}/>
-                <View style={{ marginLeft: 10}}>
+              doctors && doctors.map((item) => <View style={{ flexDirection: 'row', marginTop: 10, marginLeft: 'auto', marginRight: 'auto' }} key={item.id}>
+                <Image source={{ uri: item.avatar_url }} resizeMode='fill' style={{ borderRadius: 100, width: 60, height: 60, borderWidth: 1, borderColor: 'grey' }}/>
+                <View style={{ marginLeft: 10, width: 220 }}>
                   <Text>{ item.name }</Text>
                   <View style={{ flexDirection: 'row', gap: 5, alignItems: 'center', marginTop: 10 }}>
                     <Image source={icons.star} resizeMode='contain' style={{ width: 20, height: 20 }} />
@@ -192,7 +239,11 @@ const Home = () => {
                     <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular', color: `${colors.PRIMARY}`, fontSize: 12 }}>{ item.specialty }</Text>
                   </View>
                 </View>
-                <Link href='home' style={{ fontFamily: 'RobotoSerif_28pt-Regular', color: '#3fb779', marginLeft: 10 }}>View</Link>
+                <TouchableOpacity
+                    onPress={() => { router.push({ pathname: 'professional', params: { id: item.id } }) }}
+                >
+                    <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular', color: '#3fb779', marginLeft: 10 }}>View</Text>
+                </TouchableOpacity>
               </View>)
           }
 
@@ -213,15 +264,17 @@ const Home = () => {
           </View>
 
           {/* Have a conversation section */}
-          <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 25, backgroundColor: `${colors.SECONDARY}`}}>
+          {user.user.user_metadata.role !== 'professional' && (<View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 25, backgroundColor: `${colors.SECONDARY}`}}>
             <Text style={{ fontFamily: 'RobotoSerif_28pt-Bold',  fontSize: 25, marginLeft: 25, marginTop: 25, textAlign: 'center'}}>Contact a personal therapist</Text>
             <TouchableOpacity style={{ backgroundColor: '#3fb779', height: 40, justifyContent: 'center',
               alignItems: 'center', borderRadius: 20, width: '80%', marginTop: 20
-            }}>
+            }}
+              onPress={() => router.push('/professionals-page')}
+            >
               <Text  style={{ fontFamily: 'RobotoSerif_28pt-Regular',  fontSize: 15, color: 'white' }}>Start a conversation</Text>
             </TouchableOpacity>
             <Image source={images.lady} resizeMode='contain' style={{ width: 200, height: 200}} />
-          </View>
+          </View>)}
         </View>
       </ScrollView>
 
