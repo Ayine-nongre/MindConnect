@@ -34,9 +34,11 @@ const Signup = () => {
   // function that creates a new user
   async function signUpWithEmail() {
     setLoading(true)
+    setForm({...form, specialty: value})
     const { data, error, } = await supabase.auth.signUp({
       email: form.email,
       password: form.password,
+      
       options: {
         data: {
           role: role

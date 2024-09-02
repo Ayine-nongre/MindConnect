@@ -32,7 +32,7 @@ const PostPage = () => {
             <View style={{ flexDirection: 'row', gap: 10, marginLeft: 20, marginTop: 10 }}>
                 <Image source={{ uri: item.patients.avatar_url }} resizeMode='fill' style={{ width: 50, height: 50, borderRadius: 100, borderWidth: 1, borderColor: 'black' }} />
                 <View>
-                    <Text style={{ fontFamily: 'RobotoSerif_28pt-SemiBold' }}>{ item.patients.name }</Text>
+                    <Text style={{ fontFamily: 'RobotoSerif_28pt-SemiBold' }}>{ 'anonymous' }</Text>
                     <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular', width: 300 }}>{ item.comment }</Text>
                 </View>
             </View>
@@ -55,13 +55,13 @@ const PostPage = () => {
                 <View style={{ flexDirection: 'row', gap: 10, alignItems: 'center'}}>
                     <Image source={{ uri: post[0].patients.avatar_url }} resizeMode='fill' style={{ borderRadius: 100, width: 50, height: 50, borderWidth: 1, borderColor: 'grey' }}/>
                     <View>
-                    <Text style={{ fontFamily: 'RobotoSerif_28pt-SemiBold' }}>{ post[0].patients.name }</Text>
+                    <Text style={{ fontFamily: 'RobotoSerif_28pt-SemiBold' }}>{ 'anonymous' }</Text>
                     <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular', color: 'grey' }}>{ post[0].time }</Text>
                     </View>
                 </View>
                 </View>
                 <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular', fontSize: 15, marginLeft: 25, width: '80%', marginTop: 10 }}>{ post[0].message }</Text>
-                <Image source={{ uri: post[0].img_url }} resizeMode='cover' style={{ marginLeft: 25, marginTop: 5, borderRadius: 15, height: 180, width: 300 }} />
+                <Image source={{ uri: post[0].img_url }} resizeMode='cover' style={{ marginLeft: 25, marginTop: 5, borderRadius: 15, height: 200, width: 320 }} />
                 <View style={{ flexDirection: 'row', gap: 10, marginLeft: 25, marginTop: 5 }}>
                     <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular' }}>0 Likes</Text>
                     <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular' }}>{postComments.length} comments</Text>

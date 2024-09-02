@@ -54,21 +54,20 @@ const Post = () => {
 
   const renderPost = ({ item }) => {
     return (
-      <TouchableOpacity style={{ marginTop: 20 }}
+      <TouchableOpacity style={{ marginTop: 20, width: '90%', marginLeft: 'auto', marginRight: 'auto' }}
         onPress={() => { router.push({ pathname: 'post-page', params: { id: item.id } }) }}
       >
         <View style={{ flexDirection: 'row', gap: 150, alignItems: 'center', marginLeft: 20 }}>
           <View style={{ flexDirection: 'row', gap: 10, alignItems: 'center'}}>
             <Image source={{ uri: item.patients.avatar_url }} resizeMode='fill' style={{ borderRadius: 100, width: 50, height: 50, borderWidth: 1, borderColor: 'grey' }}/>
             <View>
-              <Text style={{ fontFamily: 'RobotoSerif_28pt-SemiBold' }}>{ item.patients.name }</Text>
+              <Text style={{ fontFamily: 'RobotoSerif_28pt-SemiBold' }}>{ 'anonymous' }</Text>
               <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular', color: 'grey' }}>{ item.time }</Text>
             </View>
           </View>
-          <Image source={icons.dots} resizeMode='contain' style={{ width: 20, height: 20 }}/>
         </View>
-        <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular', fontSize: 15, marginLeft: 25, width: '80%', marginTop: 10 }}>{ item.message }</Text>
-        <Image source={{ uri: item.img_url }} resizeMode='cover' style={{ marginLeft: 25, marginTop: 5, borderRadius: 15, height: 180, width: 300 }} />
+        <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular', fontSize: 15, marginLeft: 25, width: '90%', marginTop: 10 }}>{ item.message }</Text>
+        <Image source={{ uri: item.img_url }} resizeMode='cover' style={{ marginLeft: 25, marginTop: 5, borderRadius: 15, height: 200, width: 320 }} />
         <View style={{ flexDirection: 'row', gap: 10, marginLeft: 40, marginTop: 10, alignItems: 'center' }} >
           <TouchableOpacity
             onPress={() => {

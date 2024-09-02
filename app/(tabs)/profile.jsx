@@ -55,7 +55,7 @@ const Profile = () => {
                 <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular' }}>Logout</Text>
               </TouchableOpacity>
               <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 30 }}>
-                <Image source={{ uri: data[0].avatar_url }} resizeMode='fill' style={{ borderRadius: 100, width: 130, height: 130, backgroundColor: 'grey' }} />
+                <Image source={{ uri: data[0]?.avatar_url || null }} resizeMode='fill' style={{ borderRadius: 100, width: 130, height: 130, backgroundColor: 'grey' }} />
                 <Text style={{ fontFamily: 'RobotoSerif_28pt-SemiBold', fontSize: 20, marginTop: 20 }}>{data[0].name}</Text>
                 {user.user.user_metadata.role === 'professional' && (<Text style={{ fontFamily: 'RobotoSerif_28pt-Regular', fontSize: 10, color: `${colors.TERTIARY}` }}>{data[0].specialization_area}</Text>)}
               </View>
