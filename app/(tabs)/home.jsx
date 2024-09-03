@@ -70,14 +70,17 @@ const Home = () => {
         }
       })
       .catch(err => console.log(err))
-      getProfessionals()
-        .then((res) => {
-            setDoctors(res)
-        })
-        .catch(err => console.log(err))
+    
+    getProfessionals()
+      .then((res) => {  
+        if (res.length > 0) setDoctors([res[0]])
+      })
+      .catch(err => console.log(err))
     }
     setLoading(false)
   },[])
+
+  console.log(doctors, "Hi")
 
   const renderItem = ({ item }) => {
     return (
@@ -210,7 +213,7 @@ const Home = () => {
           }}>
             <View>
               <Text style={{ fontFamily: "RobotoSerif_28pt-Bold", fontSize: 20 }}>Categories</Text>
-              <Text style={{ fontFamily: "RobotoSerif_28pt-Regular", fontSize: 12, marginTop: 4 }}>Find your professional quickly</Text>
+              <Text style={{ fontFamily: "RobotoSerif_28pt-Regular", fontSize: 12, marginTop: 4 }}>Find professionals quickly</Text>
             </View>
             <Link href='professionals-page' style={{ fontFamily: "RobotoSerif_28pt-Regular", fontSize: 12, color: '#3fb779' }}>View all</Link>
           </View>
@@ -226,9 +229,10 @@ const Home = () => {
 
           {/* code for suggested professionals */}
           {user.user.user_metadata.role !== 'professional' && (<Text style={{ fontFamily: 'RobotoSerif_28pt-Bold',  fontSize: 20, marginLeft: 25, marginTop: 7}}>Professionals for you</Text>)}
+          {/* {user.user.user_metadata.role !== 'patient' && (<Text style={{ fontFamily: 'RobotoSerif_28pt-Bold',  fontSize: 20, marginLeft: 25, marginTop: 7}}>Seek help from colleagues?</Text>)} */}
 
           {
-              doctors && doctors.map((item) => <View style={{ flexDirection: 'row', marginTop: 10, marginLeft: 'auto', marginRight: 'auto' }} key={item.id}>
+              doctors && (user.user.user_metadata.role !== 'professional') && doctors.map((item) => <View style={{ flexDirection: 'row', marginTop: 10, marginLeft: 'auto', marginRight: 'auto' }} key={item.id}>
                 <Image source={{ uri: item.avatar_url }} resizeMode='fill' style={{ borderRadius: 100, width: 60, height: 60, borderWidth: 1, borderColor: 'grey' }}/>
                 <View style={{ marginLeft: 10, width: 220 }}>
                   <Text>{ item.name }</Text>

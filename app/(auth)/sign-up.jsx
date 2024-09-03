@@ -34,11 +34,10 @@ const Signup = () => {
   // function that creates a new user
   async function signUpWithEmail() {
     setLoading(true)
-    setForm({...form, specialty: value})
     const { data, error, } = await supabase.auth.signUp({
       email: form.email,
       password: form.password,
-      
+
       options: {
         data: {
           role: role
@@ -50,6 +49,7 @@ const Signup = () => {
       Alert.alert(error.message)
       return <Redirect href='/sign-up'/>
     }
+    
     if (data && data.user) {
       if (role === 'professional') await createNewProfessional(data.user.id, form, selectedValue).catch(err => console.log(err))
       else await createNewPatient(data.user.id, form, selectedValue).catch(err => console.log(err))
@@ -197,14 +197,14 @@ const Signup = () => {
               title='Experience'
               value={form.experience}
               handleTextChange={(e) => setForm({...form, experience: e})}
-              placeholder='Enter your phone no (Eg. 0200000000)'
+              placeholder='How many years experience do you have?'
               />
               {/* categories */}
               <View>
                     <View style={{ width: '100%', marginLeft: 'auto', marginRight: 'auto', marginTop: 10, flexDirection: 'row', gap: 60,
                         justifyContent: 'center', alignContent: 'center', padding: 15, backgroundColor: `${colors.FIELDBKG}`
                      }}>
-                        <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular', fontSize: 15, minWidth: '60%' }}>{value ? value : 'Select your area of speciality'}</Text>
+                        <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular', fontSize: 15, minWidth: '60%' }}>{form.specialty ? form.specialty : 'Select your area of speciality'}</Text>
                         <TouchableOpacity
                             onPress={() => setOpen(!open)}
                         >
@@ -216,7 +216,7 @@ const Signup = () => {
                      }}>
                         <TouchableOpacity
                             onPress={() => {
-                                setValue('BIPOLAR DISORDER')
+                                setForm({...form, specialty: 'BIPOLAR DISORDER'})
                                 setOpen(false)
                             }}
                         >
@@ -224,7 +224,7 @@ const Signup = () => {
                         </TouchableOpacity>
                         <TouchableOpacity
                             onPress={() => {
-                                setValue('STRESS')
+                                setForm({...form, specialty: 'STRESS'})
                                 setOpen(false)
                             }}
                         >
@@ -232,7 +232,7 @@ const Signup = () => {
                         </TouchableOpacity>
                         <TouchableOpacity
                             onPress={() => {
-                                setValue('DEMENTIA')
+                                setForm({...form, specialty: 'DEMENTIA'})
                                 setOpen(false)
                             }}
                         >
@@ -240,7 +240,7 @@ const Signup = () => {
                         </TouchableOpacity>
                         <TouchableOpacity
                             onPress={() => {
-                                setValue('INSOMNIA')
+                                setForm({...form, specialty: 'INSOMNIA'})
                                 setOpen(false)
                             }}
                         >
@@ -248,7 +248,7 @@ const Signup = () => {
                         </TouchableOpacity>
                         <TouchableOpacity
                             onPress={() => {
-                                setValue('ANXIETY')
+                                setForm({...form, specialty: 'ANXIETY'})
                                 setOpen(false)
                             }}
                         >
@@ -256,7 +256,7 @@ const Signup = () => {
                         </TouchableOpacity>
                         <TouchableOpacity
                             onPress={() => {
-                                setValue('SCHIZOPHRENIA')
+                                setForm({...form, specialty: 'SCHIZOPHRENIA'})
                                 setOpen(false)
                             }}
                         >
@@ -281,7 +281,7 @@ const Signup = () => {
               justifyContent: 'center', alignItems: 'center', borderRadius: 8,
               width: '100%', marginTop: 20 }}
           />
-          <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 4, marginTop: 15}}>
+          {/* <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 4, marginTop: 15}}>
             <View style={{ width: '40%', borderBottomWidth: 1 }}></View>
             <Text>Or</Text>
             <View style={{ width: '40%', borderBottomWidth: 1 }}></View>
@@ -294,7 +294,7 @@ const Signup = () => {
             justifyContent: 'center', alignItems: 'center', borderRadius: 8,
             width: '100%', marginTop: 20, borderWidth: 1, flexDirection: 'row' }}
             image={ icons.google }
-          />
+          /> */}
           <View style={{ flexDirection: 'row', justifyContent: 'center', paddingTop: 5 }}>
             <Text style={{ color: 'Black', fontFamily: 'RobotoSerif_28pt-Regular', marginTop: 7 }}>Already have an account? {' '}</Text>
             <Link href='/sign-in' style={{ color: '#7FB77E', fontFamily: 'RobotoSerif_28pt-Regular', marginTop: 7}}>Login</Link>

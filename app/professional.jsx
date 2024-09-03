@@ -112,7 +112,7 @@ const Professional = () => {
                 <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular', fontSize: 15, marginTop: 20, width: '90%', marginLeft: 'auto', marginRight: 'auto'}}>Leave the professional a direct message(only in urgent cases)</Text>
                 <CustomButton
                     title='Send SMS'
-                    handlePress={() => Communications.textWithoutEncoding(doctor.phone)}
+                    handlePress={() => Communications.textWithoutEncoding(doctor[0].phone)}
                     style={{ minHeight: 55, backgroundColor: 'red',
                     justifyContent: 'center', alignItems: 'center', borderRadius: 8,
                     width: '90%', marginTop: 20, alignSelf: 'center', marginBottom: 20 }}

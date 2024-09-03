@@ -63,7 +63,7 @@ const Signin = () => {
               justifyContent: 'center', alignItems: 'center', borderRadius: 8,
               width: '100%', marginTop: 20 }}
           />
-          <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 4, marginTop: 15}}>
+          {/* <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 4, marginTop: 15}}>
             <View style={{ width: '40%', borderBottomWidth: 1 }}></View>
             <Text>Or</Text>
             <View style={{ width: '40%', borderBottomWidth: 1 }}></View>
@@ -77,7 +77,7 @@ const Signin = () => {
               justifyContent: 'center', alignItems: 'center', borderRadius: 8,
               width: '100%', marginTop: 20, borderWidth: 1, flexDirection: 'row' }}
             image={ icons.google }
-          />
+          /> */}
         
           <View style={{ flexDirection: 'row', justifyContent: 'center', paddingTop: 5 }}>
             <Text style={{ color: 'Black', fontFamily: 'RobotoSerif_28pt-Regular', marginTop: 7 }}>Don't have an account? {' '}</Text>
