@@ -56,8 +56,8 @@ const Profile = () => {
               </TouchableOpacity>
               <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 30 }}>
                 <Image source={{ uri: data[0]?.avatar_url || null }} resizeMode='fill' style={{ borderRadius: 100, width: 130, height: 130, backgroundColor: 'grey' }} />
-                <Text style={{ fontFamily: 'RobotoSerif_28pt-SemiBold', fontSize: 20, marginTop: 20 }}>{data[0].name}</Text>
-                {user.user.user_metadata.role === 'professional' && (<Text style={{ fontFamily: 'RobotoSerif_28pt-Regular', fontSize: 10, color: `${colors.TERTIARY}` }}>{data[0].specialization_area}</Text>)}
+                <Text style={{ fontFamily: 'RobotoSerif_28pt-SemiBold', fontSize: 20, marginTop: 20 }}>{data[0]?.name || 'Loading...'}</Text>
+                {user.user.user_metadata.role === 'professional' && (<Text style={{ fontFamily: 'RobotoSerif_28pt-Regular', fontSize: 10, color: `${colors.TERTIARY}` }}>{data[0]?.specialization_area}</Text>)}
               </View>
           </View>
 
@@ -90,7 +90,7 @@ const Profile = () => {
                 </View>
                 <View style={{ borderRadius: 10, alignItems: 'center', backgroundColor: '#a0f7a4', width: 100, padding: 10 }}>
                   <Image source={ icons.check } resizeMode='contain' style={{ width: 20, height: 20 }} />
-                  <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular' }}>{data[0].experience} years</Text>
+                  <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular' }}>{data[0]?.experience} years</Text>
                   <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular', fontSize: 10 }}>Experience</Text>
                 </View>
               </View>
@@ -103,11 +103,11 @@ const Profile = () => {
           <Text style={{ marginTop: 10, fontFamily: 'RobotoSerif_28pt-Bold', fontSize: 20}}>Email</Text>
           <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular' }}>{user.user.email}</Text>
           <Text style={{ marginTop: 10, fontFamily: 'RobotoSerif_28pt-Bold', fontSize: 20}}>Phone</Text>
-          <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular' }}>{data[0].phone}</Text>
+          <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular' }}>{data[0]?.phone}</Text>
           <Text style={{ marginTop: 10, fontFamily: 'RobotoSerif_28pt-Bold', fontSize: 20}}>Gender</Text>
-          <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular' }}>{data[0].gender}</Text>
+          <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular' }}>{data[0]?.gender}</Text>
           <Text style={{ marginTop: 10, fontFamily: 'RobotoSerif_28pt-Bold', fontSize: 20}}>About</Text>
-          <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular' }}>{data[0].about}</Text>
+          <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular' }}>{data[0]?.about || "Write something about yourself here..."}</Text>
 
           {/* License details */}
           {user.user.user_metadata.role === 'professional' && (<View style={{ backgroundColor: `${colors.FIELDBKG}`, width: '90%', marginLeft: 'auto', marginRight: 'auto', marginTop: 20,
@@ -116,7 +116,7 @@ const Profile = () => {
             <Image source={icons.license} resizeMode='contain' style={{ width: 25, height: 25 }} />
             <View style={{ flexDirection: 'row', gap: 5 }}>
               <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular' }}>LPC</Text>
-              <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular', color: '#b345b3' }}>{data[0].license}</Text>
+              <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular', color: '#b345b3' }}>{data[0]?.license}</Text>
             </View>
             <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular', fontSize: 10 }}>Registered in Ghana</Text>
             <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular', fontSize: 8 }}>Licenses</Text>
@@ -126,7 +126,7 @@ const Profile = () => {
           {user.user.user_metadata.role === 'professional' && (<View style={{ flexDirection: 'row', marginTop: 20, marginBottom: 10, gap: 10, flexWrap: 'wrap' }}>
             {
               data.map((item) => <View key={item.id} style={{ backgroundColor: '#a0f7a4', padding: 10, borderRadius: 10 }}>
-                <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular', fontSize: 15 }}>{item.specialty}</Text>
+                <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular', fontSize: 15 }}>{item?.specialty}</Text>
               </View>)
             }
           </View>)}

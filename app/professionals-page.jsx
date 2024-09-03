@@ -27,6 +27,7 @@ const ProfessionalsPage = () => {
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: `${colors.BACKGROUND}` }}>
+            <ScrollView>
             {/* header code */}
             <View style={{ backgroundColor: `${colors.SECONDARY}`, flexDirection: 'row', alignItems: 'center', gap: 20, padding: 20, paddingTop: 50 }}>
                 <TouchableOpacity style={{ backgroundColor: `${colors.FIELDBKG}`, borderRadius: 100, width: 20, height: 20, padding: 15, justifyContent: 'center', alignItems: 'center' }}
@@ -52,7 +53,7 @@ const ProfessionalsPage = () => {
 
             {/* Loop through doctors and list the doctors out */}
             {doctors.length > 0 ? (
-                doctors.map((item) => <View style={{ flexDirection: 'row', marginTop: 20, marginLeft: 'auto', marginRight: 'auto' }} key={item.id}>
+                doctors.map((item) => <View style={{ flexDirection: 'row', marginTop: 20, marginLeft: 'auto', marginRight: 'auto', marginBottom: 10 }} key={item.id}>
                 <Image source={{ uri: item.avatar_url }} resizeMode='fill' style={{ borderRadius: 100, width: 60, height: 60, borderWidth: 1, borderColor: 'grey' }}/>
                 <View style={{ marginLeft: 10, width: 220 }}>
                   <Text style={{ fontFamily: 'RobotoSerif_28pt-SemiBold' }}>{ item.name }</Text>
@@ -69,10 +70,10 @@ const ProfessionalsPage = () => {
                     <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular', color: '#3fb779', marginLeft: 10 }}>View</Text>
                 </TouchableOpacity>
             </View>)
-            ) : <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular', fontSize: 20,
+            ) : (<Text style={{ fontFamily: 'RobotoSerif_28pt-Regular', fontSize: 20,
                 marginRight: 'auto', marginLeft: 'auto', top: '30%', width: 200, textAlign: "center"
-            }}>No doctors listed for this category</Text>}
-
+            }}>No doctors listed for this category</Text>)}
+            </ScrollView>
             <FocusAwareStatusBar backgroundColor={colors.SECONDARY} style='light'/>
         </SafeAreaView>
     )

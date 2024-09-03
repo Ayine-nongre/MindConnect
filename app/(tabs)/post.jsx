@@ -67,7 +67,7 @@ const Post = () => {
           </View>
         </View>
         <Text style={{ fontFamily: 'RobotoSerif_28pt-Regular', fontSize: 15, marginLeft: 25, width: '90%', marginTop: 10 }}>{ item.message }</Text>
-        <Image source={{ uri: item.img_url }} resizeMode='cover' style={{ marginLeft: 25, marginTop: 5, borderRadius: 15, height: 200, width: 320 }} />
+        <Image source={{ uri: item.img_url }} resizeMode='cover' style={{ marginLeft: 25, marginTop: 5, borderRadius: 15, height: 200, width: 300 }} />
         <View style={{ flexDirection: 'row', gap: 10, marginLeft: 40, marginTop: 10, alignItems: 'center' }} >
           <TouchableOpacity
             onPress={() => {

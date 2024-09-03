@@ -105,7 +105,7 @@ const NewBlog = () => {
                      }}>
                         <TouchableOpacity
                             onPress={() => {
-                                setValue('BIPOLAR DISORDER')
+                                setForm({...form, category: 'BIPOLAR DISORDER'})
                                 setOpen(false)
                             }}
                         >
@@ -113,7 +113,7 @@ const NewBlog = () => {
                         </TouchableOpacity>
                         <TouchableOpacity
                             onPress={() => {
-                                setValue('STRESS')
+                                setForm({...form, category: 'STRESS'})
                                 setOpen(false)
                             }}
                         >
@@ -121,7 +121,7 @@ const NewBlog = () => {
                         </TouchableOpacity>
                         <TouchableOpacity
                             onPress={() => {
-                                setValue('DEMENTIA')
+                                setForm({...form, category: 'DEMENTIA'})
                                 setOpen(false)
                             }}
                         >
@@ -129,7 +129,7 @@ const NewBlog = () => {
                         </TouchableOpacity>
                         <TouchableOpacity
                             onPress={() => {
-                                setValue('INSOMNIA')
+                                setForm({...form, category: 'INSOMNIA'})
                                 setOpen(false)
                             }}
                         >
@@ -137,7 +137,7 @@ const NewBlog = () => {
                         </TouchableOpacity>
                         <TouchableOpacity
                             onPress={() => {
-                                setValue('ANXIETY')
+                                setForm({...form, category: 'ANXIETY'})
                                 setOpen(false)
                             }}
                         >
@@ -145,7 +145,7 @@ const NewBlog = () => {
                         </TouchableOpacity>
                         <TouchableOpacity
                             onPress={() => {
-                                setValue('SCHIZOPHRENIA')
+                                setForm({...form, category: 'SCHIZOPHRENIA'})
                                 setOpen(false)
                             }}
                         >
